@@ -107,8 +107,8 @@ func generateStructSchema(t reflect.Type) map[string]any {
 		validationTag := field.Tag.Get("validate")
 		if validationTag != "" {
 			constraints := parseValidationTag(validationTag)
-			for k, v := range constraints {
-				fieldSchema[k] = v
+			for key, value := range constraints {
+				fieldSchema[key] = value
 			}
 		}
 
