@@ -8,7 +8,6 @@ import (
 )
 
 // Generate はGoの構造体からJSON Schemaを生成する。
-// map[string]any形式のJSON Schemaを返す。
 func Generate(v any) (map[string]any, error) {
 	if v == nil {
 		return nil, fmt.Errorf("cannot generate schema from nil value")
@@ -48,7 +47,6 @@ func generateSchema(t reflect.Type) map[string]any {
 
 	// マップの処理
 	if t.Kind() == reflect.Map {
-		// map[string]T のみサポート
 		if t.Key().Kind() != reflect.String {
 			return map[string]any{
 				"type": "object",
@@ -136,7 +134,7 @@ func generateStructSchema(t reflect.Type) map[string]any {
 	return schema
 }
 
-// getTypeSchema は基本的なGo型のJSON Schemaを返す。
+// getTypeSchema はGoの基本型のJSON Schemaを返す。
 func getTypeSchema(t reflect.Type) map[string]any {
 	switch t.Kind() {
 	case reflect.String:
@@ -229,7 +227,7 @@ func parseValidationTag(tag string) map[string]any {
 				constraints["pattern"] = value
 			}
 		}
-		// 注: "required"はgenerateStructSchemaで別途処理
+		// NOTE: "required"はgenerateStructSchemaで別途処理
 	}
 
 	return constraints
