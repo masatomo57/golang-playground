@@ -19,7 +19,7 @@ type testCase struct {
 func TestGenerate(t *testing.T) {
 	tests := []testCase{
 		{
-			name: "基本型",
+			name: "正常系: 基本型",
 			input: func() any {
 				type BasicStruct struct {
 					Name   string
@@ -66,7 +66,7 @@ func TestGenerate(t *testing.T) {
 			},
 		},
 		{
-			name: "JSONタグ",
+			name: "正常系: JSONタグ",
 			input: func() any {
 				type TaggedStruct struct {
 					ID       int    `json:"id"`
@@ -104,7 +104,7 @@ func TestGenerate(t *testing.T) {
 			},
 		},
 		{
-			name: "ネストした構造体",
+			name: "正常系: ネストした構造体",
 			input: func() any {
 				type Address struct {
 					Street string
@@ -147,7 +147,7 @@ func TestGenerate(t *testing.T) {
 			},
 		},
 		{
-			name: "配列",
+			name: "正常系: 配列",
 			input: func() any {
 				type ArrayStruct struct {
 					Tags    []string
@@ -187,7 +187,7 @@ func TestGenerate(t *testing.T) {
 			},
 		},
 		{
-			name: "マップ",
+			name: "正常系: マップ",
 			input: func() any {
 				type MapStruct struct {
 					Metadata map[string]string
@@ -226,7 +226,7 @@ func TestGenerate(t *testing.T) {
 			},
 		},
 		{
-			name: "バリデーション制約",
+			name: "正常系: バリデーション制約",
 			input: func() any {
 				type ValidatedStruct struct {
 					ID       int    `validate:"required,minimum=1,maximum=100"`
@@ -298,7 +298,7 @@ func TestGenerate(t *testing.T) {
 			},
 		},
 		{
-			name: "複雑な例",
+			name: "正常系: 複雑な例",
 			input: func() any {
 				type Address struct {
 					Street string `json:"street" validate:"required"`
@@ -354,6 +354,30 @@ func TestGenerate(t *testing.T) {
 				t.Logf("Generated schema:\n%s", string(jsonBytes))
 			},
 		},
+		// エラーケース
+		{
+			name:    "異常系: nil値",
+			input:   nil,
+			wantErr: true,
+			verify:  nil,
+		},
+		{
+			name:    "異常系: 非構造体型",
+			input:   "not a struct",
+			wantErr: true,
+			verify:  nil,
+		},
+		{
+			name: "正常系: 構造体へのポインタ",
+			input: func() any {
+				type TestStruct struct {
+					Name string
+				}
+				return &TestStruct{}
+			}(),
+			wantErr: false,
+			verify:  nil,
+		},
 	}
 
 	for _, tt := range tests {
@@ -365,43 +389,6 @@ func TestGenerate(t *testing.T) {
 			}
 			if err == nil && tt.verify != nil {
 				tt.verify(t, schema)
-			}
-		})
-	}
-}
-
-func TestGenerate_ErrorCases(t *testing.T) {
-	type TestStruct struct {
-		Name string
-	}
-
-	tests := []struct {
-		name    string
-		input   any
-		wantErr bool
-	}{
-		{
-			name:    "nil値",
-			input:   nil,
-			wantErr: true,
-		},
-		{
-			name:    "非構造体型",
-			input:   "not a struct",
-			wantErr: true,
-		},
-		{
-			name:    "構造体へのポインタ",
-			input:   &TestStruct{},
-			wantErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			_, err := Generate(tt.input)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Generate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
