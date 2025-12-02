@@ -74,8 +74,9 @@ func generateSchema(t reflect.Type) map[string]any {
 // generateStructSchema は構造体型のJSON Schemaを生成する。
 func generateStructSchema(t reflect.Type) map[string]any {
 	schema := map[string]any{
-		"type":       "object",
-		"properties": map[string]any{},
+		"type":                 "object",
+		"properties":           map[string]any{},
+		"additionalProperties": false,
 	}
 
 	var required []string
