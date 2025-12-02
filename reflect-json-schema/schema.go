@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// Generate generates a JSON Schema from a Go struct value.
-// Returns a map[string]any representing the JSON Schema in Draft 2020-12 format.
+// Generate はGoの構造体からJSON Schemaを生成する。
+// map[string]any形式のJSON Schemaを返す。
 func Generate(v any) (map[string]any, error) {
 	if v == nil {
 		return nil, fmt.Errorf("cannot generate schema from nil value")
@@ -23,24 +23,22 @@ func Generate(v any) (map[string]any, error) {
 		return nil, fmt.Errorf("expected struct type, got %s", t.Kind())
 	}
 
-	schema := generateSchema(t)
-	schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
-	return schema, nil
+	return generateSchema(t), nil
 }
 
-// generateSchema recursively generates a JSON Schema from a reflect.Type.
+// generateSchema はreflect.TypeからJSON Schemaを再帰的に生成する。
 func generateSchema(t reflect.Type) map[string]any {
-	// Handle pointer types
+	// ポインタ型の処理
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
 
-	// Handle basic types
+	// 基本型の処理
 	if schema := getTypeSchema(t); schema != nil {
 		return schema
 	}
 
-	// Handle slices and arrays
+	// スライスと配列の処理
 	if t.Kind() == reflect.Slice || t.Kind() == reflect.Array {
 		return map[string]any{
 			"type":  "array",
@@ -48,9 +46,9 @@ func generateSchema(t reflect.Type) map[string]any {
 		}
 	}
 
-	// Handle maps
+	// マップの処理
 	if t.Kind() == reflect.Map {
-		// Only support map[string]T
+		// map[string]T のみサポート
 		if t.Key().Kind() != reflect.String {
 			return map[string]any{
 				"type": "object",
@@ -62,18 +60,18 @@ func generateSchema(t reflect.Type) map[string]any {
 		}
 	}
 
-	// Handle structs
+	// 構造体の処理
 	if t.Kind() == reflect.Struct {
 		return generateStructSchema(t)
 	}
 
-	// Fallback for unknown types
+	// 未知の型のフォールバック
 	return map[string]any{
 		"type": "object",
 	}
 }
 
-// generateStructSchema generates a JSON Schema for a struct type.
+// generateStructSchema は構造体型のJSON Schemaを生成する。
 func generateStructSchema(t reflect.Type) map[string]any {
 	schema := map[string]any{
 		"type":       "object",
@@ -85,26 +83,26 @@ func generateStructSchema(t reflect.Type) map[string]any {
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 
-		// Skip unexported fields
+		// 非公開フィールドをスキップ
 		if !field.IsExported() {
 			continue
 		}
 
-		// Parse json tag
+		// jsonタグを解析
 		jsonName, omitempty, skip := parseJSONTag(field.Tag.Get("json"))
 		if skip {
 			continue
 		}
 
-		// Use json tag name if available, otherwise use field name
+		// jsonタグがあればその名前を使用、なければフィールド名を使用
 		if jsonName == "" {
 			jsonName = field.Name
 		}
 
-		// Generate schema for the field type
+		// フィールドの型からスキーマを生成
 		fieldSchema := generateSchema(field.Type)
 
-		// Parse validation tags
+		// validateタグを解析
 		validationTag := field.Tag.Get("validate")
 		if validationTag != "" {
 			constraints := parseValidationTag(validationTag)
@@ -113,19 +111,19 @@ func generateStructSchema(t reflect.Type) map[string]any {
 			}
 		}
 
-		// Add to required if not omitempty and has required constraint
+		// omitemptyでなく、required制約がある場合はrequiredに追加
 		if !omitempty {
 			if validationTag != "" && strings.Contains(validationTag, "required") {
 				required = append(required, jsonName)
 			} else if !strings.Contains(validationTag, "omitempty") {
-				// If no validation tag, check if it's a pointer (nullable)
+				// validateタグがない場合、ポインタ型かどうかをチェック
 				if field.Type.Kind() != reflect.Ptr {
 					required = append(required, jsonName)
 				}
 			}
 		}
 
-		// Add property to schema
+		// プロパティをスキーマに追加
 		props := schema["properties"].(map[string]any)
 		props[jsonName] = fieldSchema
 	}
@@ -137,7 +135,7 @@ func generateStructSchema(t reflect.Type) map[string]any {
 	return schema
 }
 
-// getTypeSchema returns the JSON Schema for basic Go types.
+// getTypeSchema は基本的なGo型のJSON Schemaを返す。
 func getTypeSchema(t reflect.Type) map[string]any {
 	switch t.Kind() {
 	case reflect.String:
@@ -155,8 +153,8 @@ func getTypeSchema(t reflect.Type) map[string]any {
 	}
 }
 
-// parseJSONTag parses a json tag string and returns the name, omitempty flag, and skip flag.
-// Examples:
+// parseJSONTag はjsonタグ文字列を解析し、名前、omitemptyフラグ、スキップフラグを返す。
+// 例:
 //   - `json:"name"` -> ("name", false, false)
 //   - `json:"name,omitempty"` -> ("name", true, false)
 //   - `json:"-"` -> ("", false, true)
@@ -181,14 +179,14 @@ func parseJSONTag(tag string) (name string, omitempty bool, skip bool) {
 	return name, omitempty, false
 }
 
-// parseValidationTag parses a validation tag and returns a map of JSON Schema constraints.
-// Supported constraints:
-//   - required: adds to required array (handled separately)
-//   - minimum=N: sets minimum value for numbers
-//   - maximum=N: sets maximum value for numbers
-//   - minLength=N: sets minLength for strings
-//   - maxLength=N: sets maxLength for strings
-//   - pattern=REGEX: sets pattern for strings
+// parseValidationTag はvalidateタグを解析し、JSON Schema制約のマップを返す。
+// サポートする制約:
+//   - required: required配列に追加（別途処理）
+//   - minimum=N: 数値の最小値を設定
+//   - maximum=N: 数値の最大値を設定
+//   - minLength=N: 文字列の最小長を設定
+//   - maxLength=N: 文字列の最大長を設定
+//   - pattern=REGEX: 文字列のパターンを設定
 func parseValidationTag(tag string) map[string]any {
 	constraints := make(map[string]any)
 
@@ -203,7 +201,7 @@ func parseValidationTag(tag string) map[string]any {
 			continue
 		}
 
-		// Handle key=value constraints
+		// key=value形式の制約を処理
 		if strings.Contains(part, "=") {
 			kv := strings.SplitN(part, "=", 2)
 			key := strings.TrimSpace(kv[0])
@@ -230,7 +228,7 @@ func parseValidationTag(tag string) map[string]any {
 				constraints["pattern"] = value
 			}
 		}
-		// Note: "required" is handled separately in generateStructSchema
+		// 注: "required"はgenerateStructSchemaで別途処理
 	}
 
 	return constraints

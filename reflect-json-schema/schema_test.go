@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-// verifyFunc is a function type for custom verification logic
+// verifyFunc はカスタム検証ロジック用の関数型
 type verifyFunc func(t *testing.T, schema map[string]any)
 
-// testCase represents a single test case
+// testCase は単一のテストケースを表す
 type testCase struct {
 	name    string
 	input   any
@@ -31,9 +31,6 @@ func TestGenerate(t *testing.T) {
 			}(),
 			wantErr: false,
 			verify: func(t *testing.T, schema map[string]any) {
-				if schema["$schema"] != "https://json-schema.org/draft/2020-12/schema" {
-					t.Errorf("Expected $schema, got %v", schema["$schema"])
-				}
 				if schema["type"] != "object" {
 					t.Errorf("Expected type object, got %v", schema["type"])
 				}
@@ -43,25 +40,25 @@ func TestGenerate(t *testing.T) {
 					t.Fatalf("Expected properties map")
 				}
 
-				// Check Name field
+				// Nameフィールドの確認
 				nameSchema, ok := props["Name"].(map[string]any)
 				if !ok || nameSchema["type"] != "string" {
 					t.Errorf("Expected Name to be string type")
 				}
 
-				// Check Age field
+				// Ageフィールドの確認
 				ageSchema, ok := props["Age"].(map[string]any)
 				if !ok || ageSchema["type"] != "integer" {
 					t.Errorf("Expected Age to be integer type")
 				}
 
-				// Check Score field
+				// Scoreフィールドの確認
 				scoreSchema, ok := props["Score"].(map[string]any)
 				if !ok || scoreSchema["type"] != "number" {
 					t.Errorf("Expected Score to be number type")
 				}
 
-				// Check Active field
+				// Activeフィールドの確認
 				activeSchema, ok := props["Active"].(map[string]any)
 				if !ok || activeSchema["type"] != "boolean" {
 					t.Errorf("Expected Active to be boolean type")
@@ -86,7 +83,7 @@ func TestGenerate(t *testing.T) {
 					t.Fatalf("Expected properties map")
 				}
 
-				// Check custom json names
+				// カスタムJSON名の確認
 				if _, ok := props["id"]; !ok {
 					t.Errorf("Expected 'id' property")
 				}
@@ -97,7 +94,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected 'email' property")
 				}
 
-				// Check that Password is excluded
+				// Passwordが除外されていることを確認
 				if _, ok := props["Password"]; ok {
 					t.Errorf("Password should be excluded")
 				}
@@ -166,7 +163,7 @@ func TestGenerate(t *testing.T) {
 					t.Fatalf("Expected properties map")
 				}
 
-				// Check Tags array
+				// Tags配列の確認
 				tagsSchema, ok := props["Tags"].(map[string]any)
 				if !ok || tagsSchema["type"] != "array" {
 					t.Errorf("Expected Tags to be array type")
@@ -177,7 +174,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected Tags items to be string type")
 				}
 
-				// Check Numbers array
+				// Numbers配列の確認
 				numbersSchema, ok := props["Numbers"].(map[string]any)
 				if !ok || numbersSchema["type"] != "array" {
 					t.Errorf("Expected Numbers to be array type")
@@ -205,7 +202,7 @@ func TestGenerate(t *testing.T) {
 					t.Fatalf("Expected properties map")
 				}
 
-				// Check Metadata map
+				// Metadataマップの確認
 				metadataSchema, ok := props["Metadata"].(map[string]any)
 				if !ok || metadataSchema["type"] != "object" {
 					t.Errorf("Expected Metadata to be object type")
@@ -216,7 +213,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected Metadata additionalProperties to be string type")
 				}
 
-				// Check Config map
+				// Configマップの確認
 				configSchema, ok := props["Config"].(map[string]any)
 				if !ok || configSchema["type"] != "object" {
 					t.Errorf("Expected Config to be object type")
@@ -247,7 +244,7 @@ func TestGenerate(t *testing.T) {
 					t.Fatalf("Expected properties map")
 				}
 
-				// Check ID constraints
+				// ID制約の確認
 				idSchema, ok := props["ID"].(map[string]any)
 				if !ok {
 					t.Fatalf("Expected ID property")
@@ -259,7 +256,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected ID maximum to be 100, got %v", idSchema["maximum"])
 				}
 
-				// Check Name constraints
+				// Name制約の確認
 				nameSchema, ok := props["Name"].(map[string]any)
 				if !ok {
 					t.Fatalf("Expected Name property")
@@ -271,7 +268,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected Name maxLength to be 100, got %v", nameSchema["maxLength"])
 				}
 
-				// Check Email pattern
+				// Emailパターンの確認
 				emailSchema, ok := props["Email"].(map[string]any)
 				if !ok {
 					t.Fatalf("Expected Email property")
@@ -281,7 +278,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected Email pattern to be %s, got %v", expectedPattern, emailSchema["pattern"])
 				}
 
-				// Check required fields
+				// requiredフィールドの確認
 				required, ok := schema["required"].([]string)
 				if !ok {
 					t.Fatalf("Expected required array")
@@ -321,17 +318,12 @@ func TestGenerate(t *testing.T) {
 			}(),
 			wantErr: false,
 			verify: func(t *testing.T, schema map[string]any) {
-				// Verify schema structure
-				if schema["$schema"] != "https://json-schema.org/draft/2020-12/schema" {
-					t.Errorf("Expected $schema")
-				}
-
 				props, ok := schema["properties"].(map[string]any)
 				if !ok {
 					t.Fatalf("Expected properties map")
 				}
 
-				// Verify all expected properties exist
+				// すべての期待されるプロパティが存在することを確認
 				expectedProps := []string{"id", "name", "email", "age", "tags", "metadata", "address"}
 				for _, prop := range expectedProps {
 					if _, ok := props[prop]; !ok {
@@ -339,7 +331,7 @@ func TestGenerate(t *testing.T) {
 					}
 				}
 
-				// Verify nested address structure
+				// ネストしたaddress構造体の確認
 				addressSchema, ok := props["address"].(map[string]any)
 				if !ok {
 					t.Fatalf("Expected address property")
@@ -357,7 +349,7 @@ func TestGenerate(t *testing.T) {
 					t.Errorf("Expected city property in address")
 				}
 
-				// Print schema for debugging (optional)
+				// デバッグ用にスキーマを出力
 				jsonBytes, _ := json.MarshalIndent(schema, "", "  ")
 				t.Logf("Generated schema:\n%s", string(jsonBytes))
 			},
