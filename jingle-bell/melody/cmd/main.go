@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/binary"
-	"fmt"
 	"math"
 	"os"
 
@@ -93,7 +92,6 @@ func main() {
 
 func generateMelody(note conf.Note, soundLength float64, file *os.File) {
 	samples := int((soundLength * samplesPerSec) / 4)
-	fmt.Println(samples)
 	damping := math.Pow(end, 1.0/float64(samples))
 	for i := 0; i < samples; i++ {
 		sample := math.Sin((tau * note.Hertz() * float64(i)) / float64(samplesPerSec))

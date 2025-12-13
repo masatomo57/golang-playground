@@ -22,7 +22,7 @@ func main() {
 	}
 	fmt.Println(len(melodyF))
 
-	chordFile, _ := os.Open("./chord/cmd/out.bin")
+	chordFile, _ := os.Open("./accompaniment/cmd/out.bin")
 	defer chordFile.Close()
 	chordF := []float32{}
 	for {
