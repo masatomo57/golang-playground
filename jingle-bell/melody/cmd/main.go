@@ -50,7 +50,7 @@ func main() {
 
 	// In a one-horse open sleigh
 	generateMelody(conf.E5, 1, f)
-	generateMelody(conf.G5, 1, f)
+	generateMelody(conf.D5, 1, f)
 	generateMelody(conf.D5, 1, f)
 	generateMelody(conf.E5, 1, f)
 	generateMelody(conf.D5, 2, f)
