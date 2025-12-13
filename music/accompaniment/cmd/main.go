@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/accompaniment"
-	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
+	"github.com/masatomo57/golang-oreore-comparable/music/accompaniment"
+	"github.com/masatomo57/golang-oreore-comparable/music/conf"
 )
 
 func main() {
