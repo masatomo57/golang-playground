@@ -5,9 +5,9 @@ import (
 	"math"
 	"os"
 
-	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/accompaniment"
-	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
-	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/melody"
+	"github.com/masatomo57/golang-oreore-comparable/music/accompaniment"
+	"github.com/masatomo57/golang-oreore-comparable/music/conf"
+	"github.com/masatomo57/golang-oreore-comparable/music/melody"
 )
 
 func main() {

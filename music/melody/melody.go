@@ -5,7 +5,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
+	"github.com/masatomo57/golang-oreore-comparable/music/conf"
 )
 
 type Melody []struct {
