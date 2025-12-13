@@ -5,7 +5,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/masatomo57/golang-playground/music/conf"
+	"github.com/masatomo57/golang-playground/jingle-bell/conf"
 )
 
 type Accompaniment []struct {
@@ -24,7 +24,7 @@ func (a Accompaniment) GenerateSamples() []float32 {
 			vol := 1.0 / float64(notesNum)
 			var sample float64
 			for j := 0; j < notesNum; j++ {
-				sample += vol * math.Sin((2*math.Pi*chordWithLength.Chord.Notes[j].Hertz()*float64(i))/float64(conf.SamplesPerSec))
+				sample += vol * math.Sin((2*math.Pi*chordWithLength.Chord.Notes[j].Hertz()*float64(i))/conf.SamplesPerSec)
 			}
 			sample = sample * math.Pow(damping, float64(i))
 			samples = append(samples, float32(sample))
@@ -43,7 +43,7 @@ func (a Accompaniment) WriteToFile(file *os.File) {
 			vol := 1.0 / float64(notesNum)
 			var sample float64
 			for j := 0; j < notesNum; j++ {
-				sample += vol * math.Sin((2*math.Pi*chordWithLength.Chord.Notes[j].Hertz()*float64(i))/float64(conf.SamplesPerSec))
+				sample += vol * math.Sin((2*math.Pi*chordWithLength.Chord.Notes[j].Hertz()*float64(i))/conf.SamplesPerSec)
 			}
 			sample = sample * math.Pow(damping, float64(i))
 			buf := make([]byte, 4)

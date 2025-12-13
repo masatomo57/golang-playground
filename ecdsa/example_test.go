@@ -3,7 +3,7 @@ package ecdsa_test
 import (
 	"fmt"
 
-	myecdsa "github.com/masatomo57/golang-oreore-comparable/ecdsa"
+	myecdsa "github.com/masatomo57/golang-playground/ecdsa"
 )
 
 func Example() {

@@ -34,7 +34,7 @@ Goの構造体からJSON Schema Draft 2020-12形式の`map[string]any`を生成�
 ## インストール
 
 ```bash
-go get github.com/masatomo57/golang-oreore-comparable/reflect-json-schema
+go get github.com/masatomo57/golang-playground/reflect-json-schema
 ```
 
 ## 使用方法
@@ -47,7 +47,7 @@ package main
 import (
     "encoding/json"
     "fmt"
-    "github.com/masatomo57/golang-oreore-comparable/reflect-json-schema"
+    "github.com/masatomo57/golang-playground/reflect-json-schema"
 )
 
 type User struct {

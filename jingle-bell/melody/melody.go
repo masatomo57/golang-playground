@@ -5,7 +5,7 @@ import (
 	"math"
 	"os"
 
-	"github.com/masatomo57/golang-playground/music/conf"
+	"github.com/masatomo57/golang-playground/jingle-bell/conf"
 )
 
 type Melody []struct {

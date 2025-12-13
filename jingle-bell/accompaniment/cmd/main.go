@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/masatomo57/golang-playground/music/accompaniment"
-	"github.com/masatomo57/golang-playground/music/conf"
+	"github.com/masatomo57/golang-playground/jingle-bell/accompaniment"
+	"github.com/masatomo57/golang-playground/jingle-bell/conf"
 )
 
 func main() {

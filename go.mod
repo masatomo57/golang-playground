@@ -1,4 +1,4 @@
-module github.com/masatomo57/golang-oreore-comparable
+module github.com/masatomo57/golang-playground
 
 go 1.25.1
 
