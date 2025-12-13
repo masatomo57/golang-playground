@@ -8,13 +8,6 @@ import (
 	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
 )
 
-const (
-	samplesPerSec = 44000
-	tau           = 2 * math.Pi
-
-	end = 1.0e-1
-)
-
 type Accompaniment []struct {
 	conf.Chord
 	Length float64
@@ -57,14 +50,14 @@ func main() {
 
 func (a Accompaniment) WriteTo(file *os.File) {
 	for _, chordWithLength := range a {
-		samples := int((chordWithLength.Length * samplesPerSec) / 4)
-		damping := math.Pow(end, 1.0/float64(samples))
+		samples := int((chordWithLength.Length * conf.SamplesPerSec) / 4)
+		damping := math.Pow(conf.End, 1.0/float64(samples))
 		for i := 0; i < samples; i++ {
 			notesNum := len(chordWithLength.Chord.Notes)
 			vol := 1.0 / float64(notesNum)
 			var sample float64
 			for j := 0; j < notesNum; j++ {
-				sample += vol * math.Sin((tau*chordWithLength.Chord.Notes[j].Hertz()*float64(i))/samplesPerSec)
+				sample += vol * math.Sin((2*math.Pi*chordWithLength.Chord.Notes[j].Hertz()*float64(i))/conf.SamplesPerSec)
 			}
 			sample = sample * math.Pow(damping, float64(i))
 			buf := make([]byte, 4)

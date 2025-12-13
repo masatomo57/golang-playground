@@ -8,13 +8,6 @@ import (
 	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
 )
 
-const (
-	samplesPerSec = 44000
-	tau           = 2 * math.Pi
-
-	end = 1.0e-1
-)
-
 type Melody []struct {
 	conf.Note
 	Length float64
@@ -90,10 +83,10 @@ func main() {
 
 func (m Melody) WriteTo(file *os.File) {
 	for _, noteWithLength := range m {
-		samples := int((noteWithLength.Length * samplesPerSec) / 4)
-		damping := math.Pow(end, 1.0/float64(samples))
+		samples := int((noteWithLength.Length * conf.SamplesPerSec) / 4)
+		damping := math.Pow(conf.End, 1.0/float64(samples))
 		for i := 0; i < samples; i++ {
-			sample := math.Sin((tau * noteWithLength.Note.Hertz() * float64(i)) / float64(samplesPerSec))
+			sample := math.Sin((2*math.Pi*noteWithLength.Note.Hertz()*float64(i)) / float64(conf.SamplesPerSec))
 			sample = sample * math.Pow(damping, float64(i))
 			buf := make([]byte, 4)
 			binary.LittleEndian.PutUint32(buf, math.Float32bits(float32(sample)))
