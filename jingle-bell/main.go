@@ -107,7 +107,7 @@ func main() {
 	defer f.Close()
 	samples := min(len(melodySamples), len(accompanimentSamples))
 	for i := 0; i < samples; i++ {
-		sample := melodySamples[i] + accompanimentSamples[i]
+		sample := 0.5*melodySamples[i] + 0.5*accompanimentSamples[i]
 		buf := make([]byte, 4)
 
 		binary.LittleEndian.PutUint32(buf, math.Float32bits(float32(sample)))
