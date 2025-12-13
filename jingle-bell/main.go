@@ -2,47 +2,114 @@ package main
 
 import (
 	"encoding/binary"
-	"fmt"
-	"io"
 	"math"
 	"os"
+
+	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/accompaniment"
+	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
+	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/melody"
 )
 
 func main() {
-	melodyFile, _ := os.Open("./melody/cmd/out.bin")
-	defer melodyFile.Close()
-	melodyF := []float32{}
-	for {
-		var f float32
-		err := binary.Read(melodyFile, binary.LittleEndian, &f)
-		if err == io.EOF {
-			break
-		}
-		melodyF = append(melodyF, f)
+	m := melody.Melody{
+		// Jingle bells, jingle bells
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 2},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 2},
+		// Jingle all the way
+		{Note: conf.E5, Length: 1},
+		{Note: conf.G5, Length: 1},
+		{Note: conf.C5, Length: 1.5},
+		{Note: conf.D5, Length: 0.5},
+		{Note: conf.E5, Length: 4},
+		// Oh what fun it is to ride
+		{Note: conf.F5, Length: 1},
+		{Note: conf.F5, Length: 1},
+		{Note: conf.F5, Length: 1.5},
+		{Note: conf.F5, Length: 0.5},
+		{Note: conf.F5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		// In a one-horse open sleigh
+		{Note: conf.E5, Length: 1},
+		{Note: conf.D5, Length: 1},
+		{Note: conf.D5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.D5, Length: 2},
+		{Note: conf.G5, Length: 2},
+		// Jingle bells, jingle bells
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 2},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 2},
+		// Jingle all the way
+		{Note: conf.E5, Length: 1},
+		{Note: conf.G5, Length: 1},
+		{Note: conf.C5, Length: 1.5},
+		{Note: conf.D5, Length: 0.5},
+		{Note: conf.E5, Length: 4},
+		// Oh what fun it is to ride
+		{Note: conf.F5, Length: 1},
+		{Note: conf.F5, Length: 1},
+		{Note: conf.F5, Length: 1.5},
+		{Note: conf.F5, Length: 0.5},
+		{Note: conf.F5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		{Note: conf.E5, Length: 1},
+		// In a one-horse open sleigh
+		{Note: conf.G5, Length: 1},
+		{Note: conf.G5, Length: 1},
+		{Note: conf.F5, Length: 1},
+		{Note: conf.D5, Length: 1},
+		{Note: conf.C5, Length: 4},
 	}
-	fmt.Println(len(melodyF))
 
-	chordFile, _ := os.Open("./accompaniment/cmd/out.bin")
-	defer chordFile.Close()
-	chordF := []float32{}
-	for {
-		var f float32
-		err := binary.Read(chordFile, binary.LittleEndian, &f)
-		if err == io.EOF {
-			break
-		}
-		chordF = append(chordF, f)
+	a := accompaniment.Accompaniment{
+		// Jingle bells, jingle bells
+		{Chord: conf.ChordC, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
+		// Jingle all the way
+		{Chord: conf.ChordC, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
+		// Oh what fun it is to ride
+		{Chord: conf.ChordF, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
+		// In a one-horse open sleigh
+		{Chord: conf.ChordD7, Length: 4},
+		{Chord: conf.ChordG, Length: 4},
+		// Jingle bells, jingle bells
+		{Chord: conf.ChordC, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
+		// Jingle all the way
+		{Chord: conf.ChordC, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
+		// Oh what fun it is to ride
+		{Chord: conf.ChordF, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
+		// In a one-horse open sleigh
+		{Chord: conf.ChordG7, Length: 4},
+		{Chord: conf.ChordC, Length: 4},
 	}
-	fmt.Println(len(chordF))
+
+	melodySamples := m.GenerateSamples()
+
+	accompanimentSamples := a.GenerateSamples()
 
 	file := "out.bin"
 	f, _ := os.Create(file)
-	samples := min(len(melodyF), len(chordF))
+	defer f.Close()
+	samples := min(len(melodySamples), len(accompanimentSamples))
 	for i := 0; i < samples; i++ {
-		sample := 0.5*melodyF[i] + 0.5*chordF[i]
+		sample := melodySamples[i] + accompanimentSamples[i]
 		buf := make([]byte, 4)
 
-		// バイト順序=LittleEndian
 		binary.LittleEndian.PutUint32(buf, math.Float32bits(float32(sample)))
 		f.Write(buf)
 	}

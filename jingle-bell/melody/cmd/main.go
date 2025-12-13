@@ -1,24 +1,18 @@
 package main
 
 import (
-	"encoding/binary"
-	"math"
 	"os"
 
 	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/conf"
+	"github.com/masatomo57/golang-oreore-comparable/jingle-bell/melody"
 )
-
-type Melody []struct {
-	conf.Note
-	Length float64
-}
 
 func main() {
 	file := "out.bin"
 	f, _ := os.Create(file)
 	defer f.Close()
 
-	melody := Melody{
+	m := melody.Melody{
 		// Jingle bells, jingle bells
 		{Note: conf.E5, Length: 1},
 		{Note: conf.E5, Length: 1},
@@ -78,19 +72,5 @@ func main() {
 		{Note: conf.C5, Length: 4},
 	}
 
-	melody.WriteTo(f)
-}
-
-func (m Melody) WriteTo(file *os.File) {
-	for _, noteWithLength := range m {
-		samples := int((noteWithLength.Length * conf.SamplesPerSec) / 4)
-		damping := math.Pow(conf.End, 1.0/float64(samples))
-		for i := 0; i < samples; i++ {
-			sample := math.Sin((2*math.Pi*noteWithLength.Note.Hertz()*float64(i)) / float64(conf.SamplesPerSec))
-			sample = sample * math.Pow(damping, float64(i))
-			buf := make([]byte, 4)
-			binary.LittleEndian.PutUint32(buf, math.Float32bits(float32(sample)))
-			file.Write(buf)
-		}
-	}
+	m.WriteTo(f)
 }
