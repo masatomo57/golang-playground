@@ -52,9 +52,6 @@ func main() {
 	// In a one-horse open sleigh
 	generate(conf.B2, conf.F3, conf.G3, conf.None, 4, f) // G7
 	generate(conf.C3, conf.E3, conf.G3, conf.None, 4, f) // C
-
-	// silence
-	generate(conf.None, conf.None, conf.None, conf.None, 4, f)
 }
 
 func generate(note1, note2, note3, note4 conf.Note, soundLength float64, file *os.File) {
