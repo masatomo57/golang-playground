@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	samplesPerSec = 44100
+	samplesPerSec = 44000
 	tau           = 2 * math.Pi
 
 	end = 1.0e-1
