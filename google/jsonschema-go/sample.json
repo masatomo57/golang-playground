@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "name": { "type": "string" },
+        "age": { "type": "integer" }
+    }
+}
+
+{
+    "type": "array",
+    "items": {
+        "type": "string"
+    }
+}
+
+{
+    "type": ["string", "integer"]
+}
+
+{
+    "type": "array",
+    "prefixItems": [
+        { "type": "string" },
+        { "type": "string" },
+        { "type": "string" },
+        { "type": "integer" },
+        { "type": "integer" },
+        { "type": "integer" }
+    ]
+}
